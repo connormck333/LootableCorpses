@@ -2,3 +2,4 @@ name: LootableCorpses
 version: '1.0-SNAPSHOT'
 main: com.devConnor.lootableCorpses.LootableCorpses
 api-version: '1.21'
+depend: [ProtocolLib]
