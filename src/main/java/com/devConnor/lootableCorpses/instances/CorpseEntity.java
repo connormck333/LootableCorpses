@@ -12,6 +12,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,7 +110,7 @@ public class CorpseEntity {
         Location deathLocation = location;
         spawnEntityPacket.getDoubles()
                 .write(0, deathLocation.getX())
-                .write(1, deathLocation.getY())
+                .write(1, getHighestBlock())
                 .write(2, deathLocation.getZ());
         spawnEntityPacket.getBytes()
                 .write(0, (byte) ((deathLocation.getYaw() * 256.0F) / 360.0F))
@@ -145,6 +146,12 @@ public class CorpseEntity {
         packet.getSlotStackPairLists().write(0, equipmentList);
 
         return packet;
+    }
+
+    private double getHighestBlock() {
+        Location highestBlockLocation = location.getWorld().getHighestBlockAt(location).getLocation();
+
+        return highestBlockLocation.getBlockY() < location.getBlockY() ? highestBlockLocation.getBlockY() + 0.9 : location.getBlockY() - 0.1;
     }
 
     private void sendPackets() {
