@@ -1,7 +1,7 @@
 # Lootable Corpses config
 #
-#
-
+# Set in minutes how long corpses before corpses are removed
+remove-corpse-after-minutes: 1
 #
 #
 #

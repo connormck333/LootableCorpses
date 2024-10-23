@@ -38,6 +38,9 @@ public class CorpseEntity {
     @Getter
     private final CorpseGui corpseGui;
 
+    @Getter
+    private final Long timestamp;
+
     private final EntityPose pose;
     private WrappedGameProfile corpse;
 
@@ -65,6 +68,7 @@ public class CorpseEntity {
                 EnumWrappers.ItemSlot.CHEST,
                 EnumWrappers.ItemSlot.HEAD
         };
+        this.timestamp = System.currentTimeMillis();
 
         sendPackets();
     }
