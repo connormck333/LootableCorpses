@@ -7,7 +7,6 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.devConnor.lootableCorpses.instances.CorpseEntity;
-import com.devConnor.lootableCorpses.instances.CorpseGui;
 import com.devConnor.lootableCorpses.listeners.CorpseListener;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
 import com.devConnor.lootableCorpses.utils.ConfigManager;
@@ -33,7 +32,10 @@ public final class LootableCorpses extends JavaPlugin {
         this.protocolManager = ProtocolLibrary.getProtocolManager();
 
         Bukkit.getPluginManager().registerEvents(new CorpseListener(corpseManager), this);
-        createUseEntityPacketListener();
+
+        if (!ConfigManager.isLootingDisabled()) {
+            createUseEntityPacketListener();
+        }
     }
 
     public Collection<? extends Player> getPlayers() {

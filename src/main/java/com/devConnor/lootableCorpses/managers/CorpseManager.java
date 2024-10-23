@@ -33,7 +33,7 @@ public class CorpseManager {
     }
 
     public void createCorpse(Player player, PlayerInventory inventory) {
-        corpses.add(new CorpseEntity(lootableCorpses, player.getUniqueId(), player.getLastDeathLocation(), inventory));
+        corpses.add(new CorpseEntity(lootableCorpses, player.getUniqueId(), player.getLocation(), inventory));
     }
 
     public void removeArmorFromCorpse(int entityId, int slot) {
@@ -61,6 +61,10 @@ public class CorpseManager {
 
     public CorpseGui getPlayerOpenGui(UUID player) {
         return inventoriesOpen.get(player);
+    }
+
+    public void deleteCorpse(CorpseEntity corpseEntity) {
+        corpses.remove(corpseEntity);
     }
 
     public void createNewCorpseGui(Player player, CorpseEntity corpseEntity) {
