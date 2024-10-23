@@ -15,4 +15,8 @@ public class ConfigManager {
         lootableCorpses.saveDefaultConfig();
     }
 
+    public static int getCorpseLifespanMillis() {
+        return (config.getInt("remove-corpse-after-minutes") * 60) * 1000;
+    }
+
 }
