@@ -3,3 +3,21 @@ version: '1.0-SNAPSHOT'
 main: com.devConnor.lootableCorpses.LootableCorpses
 api-version: '1.21'
 depend: [ProtocolLib]
+commands:
+  lootablecorpses:
+    description: "Main command for the LootableCorpses plugin"
+    usage: "/corpses <subcommand>"
+    aliases: ["corpses"]
+    children:
+      lootablecorpses clear:
+        description: "Clear all existing corpses"
+        usage: "/corpses clear"
+      lootablecorpses remove:
+        description: "Obtain a wand to remove any corpse you interact with"
+        usage: "/corpses remove"
+      lootablecorpses enable:
+        description: "Enable the LootableCorpses plugin"
+        usage: "/corpses enable"
+      lootablecorpses disable:
+        description: "Disable the LootableCorpses plugin"
+        usage: "/corpses disable"

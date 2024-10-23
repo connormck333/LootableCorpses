@@ -1,5 +1,6 @@
 package com.devConnor.lootableCorpses.listeners;
 
+import com.devConnor.lootableCorpses.LootableCorpses;
 import com.devConnor.lootableCorpses.instances.CorpseGui;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
 import org.bukkit.entity.Player;
@@ -10,17 +11,21 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class CorpseListener implements Listener {
 
+    private final LootableCorpses lootableCorpses;
     private final CorpseManager corpseManager;
 
-    public CorpseListener(CorpseManager corpseManager) {
+    public CorpseListener(LootableCorpses lootableCorpses, CorpseManager corpseManager) {
+        this.lootableCorpses = lootableCorpses;
         this.corpseManager = corpseManager;
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        Player player = e.getEntity();
-        corpseManager.createCorpse(player, player.getInventory());
-        e.getDrops().clear();
+        if (lootableCorpses.isPluginEnabled()) {
+            Player player = e.getEntity();
+            corpseManager.createCorpse(player, player.getInventory());
+            e.getDrops().clear();
+        }
     }
 
     @EventHandler

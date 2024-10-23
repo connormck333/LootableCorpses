@@ -7,6 +7,8 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.devConnor.lootableCorpses.instances.CorpseEntity;
+import com.devConnor.lootableCorpses.instances.CorpseRemoveWand;
+import com.devConnor.lootableCorpses.listeners.CommandListener;
 import com.devConnor.lootableCorpses.listeners.CorpseListener;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
 import com.devConnor.lootableCorpses.utils.ConfigManager;
@@ -24,6 +26,9 @@ public final class LootableCorpses extends JavaPlugin {
     @Getter
     private ProtocolManager protocolManager;
 
+    @Getter
+    private boolean isPluginEnabled;
+
     @Override
     public void onEnable() {
         ConfigManager.setupConfig(this);
@@ -31,15 +36,22 @@ public final class LootableCorpses extends JavaPlugin {
         this.corpseManager = new CorpseManager(this);
         this.protocolManager = ProtocolLibrary.getProtocolManager();
 
-        Bukkit.getPluginManager().registerEvents(new CorpseListener(corpseManager), this);
+        Bukkit.getPluginManager().registerEvents(new CorpseListener(this, corpseManager), this);
 
-        if (!ConfigManager.isLootingDisabled()) {
+        this.isPluginEnabled = !ConfigManager.isLootingDisabled();
+        if (this.isPluginEnabled) {
             createUseEntityPacketListener();
         }
+
+        getCommand("lootablecorpses").setExecutor(new CommandListener(this, corpseManager));
     }
 
     public Collection<? extends Player> getPlayers() {
         return Bukkit.getOnlinePlayers();
+    }
+
+    public void toggle(boolean enable) {
+        this.isPluginEnabled = enable;
     }
 
     private void createUseEntityPacketListener() {
@@ -52,6 +64,11 @@ public final class LootableCorpses extends JavaPlugin {
                 CorpseEntity corpseEntity = corpseManager.getCorpseEntity(entityId);
                 Player player = e.getPlayer();
                 if (corpseEntity == null || player == null) {
+                    return;
+                }
+
+                if (CorpseRemoveWand.isWand(player.getInventory().getItemInMainHand())) {
+                    Bukkit.getScheduler().runTask(LootableCorpses.this, () -> corpseManager.destroyCorpse(corpseEntity));
                     return;
                 }
 
