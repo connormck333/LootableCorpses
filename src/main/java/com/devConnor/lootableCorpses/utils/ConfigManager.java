@@ -19,4 +19,7 @@ public class ConfigManager {
         return (config.getInt("remove-corpse-after-minutes") * 60) * 1000;
     }
 
+    public static boolean isLootingDisabled() {
+        return config.getBoolean("disable-looting");
+    }
 }

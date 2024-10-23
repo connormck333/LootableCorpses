@@ -11,6 +11,8 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+
 public class AutoRemover extends BukkitRunnable {
 
     private final LootableCorpses lootableCorpses;
@@ -29,22 +31,28 @@ public class AutoRemover extends BukkitRunnable {
 
     @Override
     public void run() {
+        ArrayList<CorpseEntity> corpseEntitiesToDestroy = new ArrayList<>();
         IntList entityIds = new IntArrayList();
         for (CorpseEntity corpseEntity : corpseManager.getCorpses()) {
             if ((System.currentTimeMillis() - corpseEntity.getTimestamp()) >= CORPSE_LIFESPAN_MILLIS) {
+                corpseEntitiesToDestroy.add(corpseEntity);
                 entityIds.add(corpseEntity.getId());
             }
         }
 
-        destroyCorpses(entityIds);
+        destroyCorpses(corpseEntitiesToDestroy, entityIds);
     }
 
-    private void destroyCorpses(IntList entityIds) {
+    private void destroyCorpses(ArrayList<CorpseEntity> corpseEntitiesToDestroy, IntList entityIds) {
         PacketContainer removeEntityPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
         removeEntityPacket.getModifier().write(0, entityIds);
 
         for (Player player : lootableCorpses.getPlayers()) {
             lootableCorpses.getProtocolManager().sendServerPacket(player, removeEntityPacket);
+        }
+
+        for (CorpseEntity corpseEntity : corpseEntitiesToDestroy) {
+            corpseManager.deleteCorpse(corpseEntity);
         }
     }
 }

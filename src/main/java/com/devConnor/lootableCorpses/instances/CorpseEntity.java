@@ -74,7 +74,18 @@ public class CorpseEntity {
     }
 
     private PacketContainer createCorpse() {
-        this.corpse = new WrappedGameProfile(UUID.randomUUID(), Bukkit.getPlayer(player).getName());
+        Player corpsePlayer =  Bukkit.getPlayer(player);
+        if (corpsePlayer == null) {
+            return null;
+        }
+
+        WrappedGameProfile corpseProfile = WrappedGameProfile.fromPlayer(corpsePlayer);
+        WrappedSignedProperty textures = corpseProfile.getProperties().get("textures").stream().findFirst().orElse(null);
+
+        this.corpse = new WrappedGameProfile(UUID.randomUUID(), corpsePlayer.getName());
+        if (textures != null) {
+            corpse.getProperties().put("textures", new WrappedSignedProperty("textures", textures.getValue(), textures.getSignature()));
+        }
 
         PlayerInfoData playerInfoData = new PlayerInfoData(
                 corpse,
