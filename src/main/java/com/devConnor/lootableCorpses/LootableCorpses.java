@@ -6,7 +6,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.devConnor.lootableCorpses.instances.CorpseEntity;
+import com.devConnor.lootableCorpses.instances.corpses.CorpseEntity;
 import com.devConnor.lootableCorpses.instances.CorpseRemoveWand;
 import com.devConnor.lootableCorpses.listeners.CommandListener;
 import com.devConnor.lootableCorpses.listeners.CorpseListener;
