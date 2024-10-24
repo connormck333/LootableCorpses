@@ -3,7 +3,7 @@ package com.devConnor.lootableCorpses.managers;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.devConnor.lootableCorpses.LootableCorpses;
-import com.devConnor.lootableCorpses.instances.CorpseEntity;
+import com.devConnor.lootableCorpses.instances.corpses.CorpseEntity;
 import com.devConnor.lootableCorpses.instances.CorpseGui;
 import com.devConnor.lootableCorpses.listeners.AutoRemover;
 import com.devConnor.lootableCorpses.utils.ConfigManager;

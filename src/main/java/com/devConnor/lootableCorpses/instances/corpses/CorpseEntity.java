@@ -1,9 +1,11 @@
-package com.devConnor.lootableCorpses.instances;
+package com.devConnor.lootableCorpses.instances.corpses;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.*;
 import com.devConnor.lootableCorpses.LootableCorpses;
+import com.devConnor.lootableCorpses.instances.CorpseGui;
+import com.devConnor.lootableCorpses.instances.CorpseInventory;
 import lombok.Getter;
 import net.minecraft.world.entity.EntityPose;
 import org.bukkit.Bukkit;
@@ -18,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.devConnor.lootableCorpses.utils.VersionUtils.isVersionAtLeast;
 
 public class CorpseEntity {
     
@@ -41,7 +45,6 @@ public class CorpseEntity {
     @Getter
     private final Long timestamp;
 
-    private final EntityPose pose;
     private WrappedGameProfile corpse;
 
     private final ArrayList<PacketContainer> packets;
@@ -53,7 +56,6 @@ public class CorpseEntity {
         this.id = (int) (Math.random() * Integer.MAX_VALUE);
         this.player = player;
         this.location = deathLocation;
-        this.pose = EntityPose.b;
         this.corpseInventory = new CorpseInventory(inventory);
         this.corpseGui = new CorpseGui(this.id, player, this.corpseInventory);
         this.packets = new ArrayList<>();
@@ -102,7 +104,10 @@ public class CorpseEntity {
     }
 
     private PacketContainer spawnCorpse() {
-        PacketContainer spawnEntityPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
+        boolean isVersionAbove20_2 = isVersionAtLeast("20.2");
+        PacketContainer spawnEntityPacket = lootableCorpses.getProtocolManager().createPacket(
+                isVersionAbove20_2 ? PacketType.Play.Server.SPAWN_ENTITY : PacketType.Play.Server.NAMED_ENTITY_SPAWN
+        );
         spawnEntityPacket.getUUIDs().write(0, corpse.getUUID());
         spawnEntityPacket.getIntegers().write(0, this.id);
 
@@ -114,14 +119,16 @@ public class CorpseEntity {
         spawnEntityPacket.getBytes()
                 .write(0, (byte) ((deathLocation.getYaw() * 256.0F) / 360.0F))
                 .write(1, (byte) -90);
-        spawnEntityPacket.getEntityTypeModifier().write(0, EntityType.PLAYER);
+        if (isVersionAbove20_2) {
+            spawnEntityPacket.getEntityTypeModifier().write(0, EntityType.PLAYER);
+        }
 
         return spawnEntityPacket;
     }
 
     private PacketContainer getMetadataPacket() {
         WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
-        dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(6, WrappedDataWatcher.Registry.get(EntityPose.class)), this.pose);
+        dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(6, WrappedDataWatcher.Registry.get(EntityPose.class)), EntityPose.b);
 
         // Prepare the metadata packet
         PacketContainer metadataPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
