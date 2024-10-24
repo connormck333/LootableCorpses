@@ -1,11 +1,9 @@
-package com.devConnor.lootableCorpses.instances.corpses;
+package com.devConnor.lootableCorpses.instances;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.*;
 import com.devConnor.lootableCorpses.LootableCorpses;
-import com.devConnor.lootableCorpses.instances.CorpseGui;
-import com.devConnor.lootableCorpses.instances.CorpseInventory;
 import lombok.Getter;
 import net.minecraft.world.entity.EntityPose;
 import org.bukkit.Bukkit;
