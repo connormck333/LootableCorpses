@@ -1,4 +1,4 @@
-# LootableCorpses
+# <img src="./resources/icon.png" alt="icon" style="width:30px;height:30px;"></img> LootableCorpses
 
 ### What is LootableCorpses?
 **Lootable Corpses** enhances your Minecraft experience by allowing players to loot the items from their fallen comrades.
