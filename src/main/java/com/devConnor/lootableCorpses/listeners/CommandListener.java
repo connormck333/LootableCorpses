@@ -58,7 +58,7 @@ public class CommandListener implements CommandExecutor {
     }
 
     private boolean doesPlayerHavePermissions(Player player) {
-        if (player.isOp() || player.hasPermission("imposter.admin")) {
+        if (player.isOp() || player.hasPermission("lootablecorpses.admin")) {
             return true;
         }
 
