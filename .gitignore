@@ -18,5 +18,6 @@ buildNumber.properties
 
 LootableCorpses.iml
 .DS_Store
-.idea
+.idea/
 resources/.DS_Store
+.idea/misc.xml
