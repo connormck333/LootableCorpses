@@ -95,8 +95,12 @@ public class CorpseEntity {
         );
 
         PacketContainer playerInfoPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
-        playerInfoPacket.getPlayerInfoActions().write(0, Collections.singleton(EnumWrappers.PlayerInfoAction.ADD_PLAYER));
-        playerInfoPacket.getPlayerInfoDataLists().write(1, Collections.singletonList(playerInfoData));
+        playerInfoPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(playerInfoData));
+        if (isVersionAtLeast("20.0")) {
+            playerInfoPacket.getPlayerInfoActions().write(0, Collections.singleton(EnumWrappers.PlayerInfoAction.ADD_PLAYER));
+        } else {
+            playerInfoPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
+        }
 
         return playerInfoPacket;
     }
@@ -125,20 +129,42 @@ public class CorpseEntity {
     }
 
     private PacketContainer getMetadataPacket() {
-        WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
-        dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(6, WrappedDataWatcher.Registry.get(EntityPose.class)), EntityPose.b);
+        if (isVersionAtLeast("20.1")) {
+            WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
+            dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(6, WrappedDataWatcher.Registry.get(EntityPose.class)), EntityPose.b);
 
-        // Prepare the metadata packet
-        PacketContainer metadataPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
-        List<WrappedDataValue> wrappedDataValues = dataWatcher.getWatchableObjects().stream()
-                .map(watchableObject -> new WrappedDataValue(watchableObject.getIndex(), watchableObject.getWatcherObject().getSerializer(), watchableObject.getValue()))
-                .collect(Collectors.toList());
+            // Prepare the metadata packet
+            PacketContainer metadataPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+            List<WrappedDataValue> wrappedDataValues = dataWatcher.getWatchableObjects().stream()
+                    .map(watchableObject -> new WrappedDataValue(watchableObject.getIndex(), watchableObject.getWatcherObject().getSerializer(), watchableObject.getValue()))
+                    .collect(Collectors.toList());
 
-        // Write the entity ID and data
-        metadataPacket.getIntegers().write(0, this.id);
-        metadataPacket.getDataValueCollectionModifier().write(0, wrappedDataValues);
+            // Write the entity ID and data
+            metadataPacket.getIntegers().write(0, this.id);
+            metadataPacket.getDataValueCollectionModifier().write(0, wrappedDataValues);
 
-        return metadataPacket;
+            return metadataPacket;
+        } else {
+            PacketContainer metadataPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+
+            // Set the entity ID
+            metadataPacket.getIntegers().write(0, this.id);
+
+            // Create metadata entries manually
+            List<WrappedDataValue> wrappedDataValues = new ArrayList<>();
+
+            // Example: Setting pose, replace EntityPose.SLEEPING with your required pose
+            WrappedDataWatcher.WrappedDataWatcherObject poseObject = new WrappedDataWatcher.WrappedDataWatcherObject(
+                    6, WrappedDataWatcher.Registry.get(EntityPose.class));
+            WrappedDataValue poseValue = new WrappedDataValue(poseObject.getIndex(), poseObject.getSerializer(), EntityPose.b);
+
+            wrappedDataValues.add(poseValue);
+
+            // Attach data values to the metadata packet
+            metadataPacket.getDataValueCollectionModifier().write(0, wrappedDataValues);
+
+            return metadataPacket;
+        }
     }
 
     private PacketContainer getArmorPacket(EnumWrappers.ItemSlot slot, ItemStack item) {
