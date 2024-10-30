@@ -18,7 +18,6 @@ public class VersionUtils {
         if (matcher.find()) {
             int currentMajor = Integer.parseInt(matcher.group(1));
             int currentMinor = matcher.group(2) != null ? Integer.parseInt(matcher.group(2)) : 0;
-            System.out.println(currentMajor + " " + currentMinor);
 
             // Extract major and minor from the versionToCheck
             String[] versionParts = versionToCheck.split("\\.");
@@ -28,7 +27,6 @@ public class VersionUtils {
 
             int checkMajor = Integer.parseInt(versionParts[0]);
             int checkMinor = Integer.parseInt(versionParts[1]);
-            System.out.println(checkMajor + " " + checkMinor);
 
             // Compare versions: check if the current version is at least the version to check
             return (currentMajor > checkMajor) || (currentMajor == checkMajor && currentMinor >= checkMinor);
