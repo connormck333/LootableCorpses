@@ -1,9 +1,14 @@
 # Lootable Corpses config
-#
-#
+
 # Set in minutes how long corpses before corpses are removed
+# Set to 0 to not remove corpses automatically
 remove-corpse-after-minutes: 1
-#
-#
+
 # Disable looting corpses
 disable-looting: false
+
+# Instant respawn - cancel death screen
+instant-respawn: true
+
+# Kill players when leaving game
+kill-on-leave: false

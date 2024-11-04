@@ -9,6 +9,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.devConnor.lootableCorpses.instances.CorpseEntity;
 import com.devConnor.lootableCorpses.instances.CorpseRemoveWand;
 import com.devConnor.lootableCorpses.listeners.CommandListener;
+import com.devConnor.lootableCorpses.listeners.ConnectListener;
 import com.devConnor.lootableCorpses.listeners.CorpseListener;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
 import com.devConnor.lootableCorpses.utils.ConfigManager;
@@ -37,6 +38,7 @@ public final class LootableCorpses extends JavaPlugin {
         this.protocolManager = ProtocolLibrary.getProtocolManager();
 
         Bukkit.getPluginManager().registerEvents(new CorpseListener(this, corpseManager), this);
+        Bukkit.getPluginManager().registerEvents(new ConnectListener(corpseManager), this);
 
         this.isPluginEnabled = !ConfigManager.isLootingDisabled();
         if (this.isPluginEnabled) {

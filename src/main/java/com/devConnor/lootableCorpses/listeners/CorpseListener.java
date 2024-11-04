@@ -3,11 +3,13 @@ package com.devConnor.lootableCorpses.listeners;
 import com.devConnor.lootableCorpses.LootableCorpses;
 import com.devConnor.lootableCorpses.instances.CorpseGui;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class CorpseListener implements Listener {
 
@@ -25,6 +27,10 @@ public class CorpseListener implements Listener {
             Player player = e.getEntity();
             corpseManager.createCorpse(player, player.getInventory());
             e.getDrops().clear();
+
+            if (corpseManager.isInstantRespawnEnabled()) {
+                Bukkit.getScheduler().runTaskLater(lootableCorpses, () -> player.spigot().respawn(), 0L);
+            }
         }
     }
 

@@ -18,6 +18,22 @@ public class ConfigManager {
     }
 
     public static boolean isLootingDisabled() {
-        return config.getBoolean("disable-looting");
+        return getBoolean("disable-looting");
+    }
+
+    public static boolean isInstantRespawnEnabled() {
+        return getBoolean("instant-respawn");
+    }
+
+    public static boolean shouldKillOnLeave() {
+        return getBoolean("kill-on-leave");
+    }
+
+    private static boolean getBoolean(String path) {
+        try {
+            return config.getBoolean(path);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
