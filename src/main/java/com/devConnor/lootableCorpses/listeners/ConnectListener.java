@@ -1,9 +1,11 @@
 package com.devConnor.lootableCorpses.listeners;
 
 import com.devConnor.lootableCorpses.managers.CorpseManager;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class ConnectListener implements Listener {
 
@@ -16,5 +18,13 @@ public class ConnectListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         this.corpseManager.revealCorpsesToNewPlayer(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent e) {
+        if (corpseManager.isKillOnLeave()) {
+            Player player = e.getPlayer();
+            player.setHealth(0);
+        }
     }
 }

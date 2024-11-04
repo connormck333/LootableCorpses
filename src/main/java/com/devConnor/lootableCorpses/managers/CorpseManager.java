@@ -27,6 +27,12 @@ public class CorpseManager {
     private final AutoRemover autoRemover;
     private final HashMap<UUID, CorpseGui> inventoriesOpen;
 
+    @Getter
+    private boolean instantRespawnEnabled;
+
+    @Getter
+    private boolean killOnLeave;
+
     private final int CORPSE_LIFESPAN_MILLIS;
 
     public CorpseManager(LootableCorpses lootableCorpses) {
@@ -35,6 +41,8 @@ public class CorpseManager {
         this.corpses = new ArrayList<>();
         this.autoRemover = new AutoRemover(lootableCorpses, this);
         this.inventoriesOpen = new HashMap<>();
+        this.instantRespawnEnabled = ConfigManager.isInstantRespawnEnabled();
+        this.killOnLeave = ConfigManager.shouldKillOnLeave();
 
         this.CORPSE_LIFESPAN_MILLIS = ConfigManager.getCorpseLifespanMillis();
 
@@ -53,6 +61,7 @@ public class CorpseManager {
     }
 
     public void revealCorpsesToNewPlayer(Player player) {
+        System.out.println("revealing corpses to just joined player");
         for (CorpseEntity corpse : corpses) {
             corpse.sendPacketToPlayer(player);
         }
@@ -82,7 +91,7 @@ public class CorpseManager {
         ArrayList<CorpseEntity> corpseEntitiesToDestroy = new ArrayList<>();
         IntList entityIds = new IntArrayList();
         for (CorpseEntity corpseEntity : corpses) {
-            if (disregardTime || (System.currentTimeMillis() - corpseEntity.getTimestamp()) >= CORPSE_LIFESPAN_MILLIS) {
+            if (disregardTime || (CORPSE_LIFESPAN_MILLIS != Integer.MIN_VALUE && (System.currentTimeMillis() - corpseEntity.getTimestamp()) >= CORPSE_LIFESPAN_MILLIS)) {
                 corpseEntitiesToDestroy.add(corpseEntity);
                 entityIds.add(corpseEntity.getId());
             }

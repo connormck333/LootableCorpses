@@ -5,6 +5,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.*;
 import com.devConnor.lootableCorpses.LootableCorpses;
 import lombok.Getter;
+import net.minecraft.network.chat.RemoteChatSession;
 import net.minecraft.world.entity.EntityPose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -88,19 +89,21 @@ public class CorpseEntity {
         }
 
         PlayerInfoData playerInfoData = new PlayerInfoData(
-                corpse,
+                corpse.getUUID(),
                 0,
+                false,
                 EnumWrappers.NativeGameMode.SURVIVAL,
+                corpse,
                 null
         );
 
         PacketContainer playerInfoPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
-        playerInfoPacket.getPlayerInfoDataLists().write(0, Collections.singletonList(playerInfoData));
         if (isVersionAtLeast("20.0")) {
             playerInfoPacket.getPlayerInfoActions().write(0, Collections.singleton(EnumWrappers.PlayerInfoAction.ADD_PLAYER));
         } else {
             playerInfoPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
         }
+        playerInfoPacket.getPlayerInfoDataLists().write(1, Collections.singletonList(playerInfoData));
 
         return playerInfoPacket;
     }
