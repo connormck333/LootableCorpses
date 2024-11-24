@@ -5,7 +5,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.*;
 import com.devConnor.lootableCorpses.LootableCorpses;
 import lombok.Getter;
-import net.minecraft.network.chat.RemoteChatSession;
 import net.minecraft.world.entity.EntityPose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

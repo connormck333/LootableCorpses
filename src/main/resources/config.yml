@@ -1,8 +1,13 @@
 # Lootable Corpses config
 
-# Set in minutes how long corpses before corpses are removed
+# Set in minutes how many minutes before corpses are removed
 # Set to 0 to not remove corpses automatically
-remove-corpse-after-minutes: 1
+remove-corpse-after-minutes: 2
+
+# Set in minutes how many minutes before corpses are removed after interaction
+# Set to 0 to remove instantly after interaction
+# Set to -1 to disable
+remove-corpse-after-interaction-minutes: 0
 
 # Disable looting corpses
 disable-looting: false
