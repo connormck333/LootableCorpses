@@ -30,12 +30,19 @@ public final class LootableCorpses extends JavaPlugin {
     @Getter
     private boolean isPluginEnabled;
 
+    @Getter
+    private int corpseLifespanAfterInteraction;
+
     @Override
     public void onEnable() {
         ConfigManager.setupConfig(this);
 
         this.corpseManager = new CorpseManager(this);
         this.protocolManager = ProtocolLibrary.getProtocolManager();
+
+        if (ConfigManager.isCorpseLifespanAfterInteractionSet()) {
+            this.corpseLifespanAfterInteraction = ConfigManager.getCorpseLifespanAfterInteractionMillis();
+        }
 
         Bukkit.getPluginManager().registerEvents(new CorpseListener(this, corpseManager), this);
         Bukkit.getPluginManager().registerEvents(new ConnectListener(corpseManager), this);

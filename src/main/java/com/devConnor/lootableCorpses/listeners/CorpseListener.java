@@ -9,7 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 
 public class CorpseListener implements Listener {
 
@@ -48,6 +48,14 @@ public class CorpseListener implements Listener {
         int slot = e.getRawSlot();
         if (slot >= 36 && slot <= 39) {
             corpseManager.removeArmorFromCorpse(inventory.getEntityId(), slot);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerChangeWorld(PlayerChangedWorldEvent e) {
+        if (lootableCorpses.isPluginEnabled()) {
+            Player player = e.getPlayer();
+            corpseManager.revealCorpsesToNewPlayer(player);
         }
     }
 }

@@ -10,6 +10,8 @@ import com.devConnor.lootableCorpses.utils.ConfigManager;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -28,10 +30,10 @@ public class CorpseManager {
     private final HashMap<UUID, CorpseGui> inventoriesOpen;
 
     @Getter
-    private boolean instantRespawnEnabled;
+    private final boolean instantRespawnEnabled;
 
     @Getter
-    private boolean killOnLeave;
+    private final boolean killOnLeave;
 
     private final int CORPSE_LIFESPAN_MILLIS;
 
@@ -61,9 +63,11 @@ public class CorpseManager {
     }
 
     public void revealCorpsesToNewPlayer(Player player) {
-        System.out.println("revealing corpses to just joined player");
+        World playerWorld = player.getWorld();
         for (CorpseEntity corpse : corpses) {
-            corpse.sendPacketToPlayer(player);
+            if (corpse.getLocation().getWorld() == playerWorld) {
+                corpse.sendPacketToPlayer(player);
+            }
         }
     }
 
@@ -85,6 +89,8 @@ public class CorpseManager {
         CorpseGui gui = corpseEntity.getCorpseGui();
         inventoriesOpen.put(player.getUniqueId(), gui);
         gui.open(player);
+
+        setCorpseRemoverTimer(corpseEntity);
     }
 
     public void clear(boolean disregardTime) {
@@ -117,6 +123,15 @@ public class CorpseManager {
 
         for (CorpseEntity corpseEntity : corpseEntitiesToDestroy) {
             corpses.remove(corpseEntity);
+        }
+    }
+
+    private void setCorpseRemoverTimer(CorpseEntity corpseEntity) {
+        int lifespan = lootableCorpses.getCorpseLifespanAfterInteraction();
+        if (lifespan == 0) {
+            destroyCorpse(corpseEntity);
+        } else if (lifespan > 0) {
+            Bukkit.getScheduler().runTaskLater(lootableCorpses, () -> destroyCorpse(corpseEntity), lifespan);
         }
     }
 }

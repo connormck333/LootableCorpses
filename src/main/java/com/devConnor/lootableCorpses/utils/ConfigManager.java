@@ -17,6 +17,19 @@ public class ConfigManager {
         return (config.getInt("remove-corpse-after-minutes") * 60) * 1000;
     }
 
+    public static int getCorpseLifespanAfterInteractionMillis() {
+        return (config.getInt("remove-corpse-after-interaction-minutes") * 60) * 1000;
+    }
+
+    public static boolean isCorpseLifespanAfterInteractionSet() {
+        try {
+            config.getInt("remove-corpse-after-interaction-minutes");
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static boolean isLootingDisabled() {
         return getBoolean("disable-looting");
     }
