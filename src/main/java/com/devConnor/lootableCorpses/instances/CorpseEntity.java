@@ -62,6 +62,7 @@ public class CorpseEntity {
         this.packets.add(createCorpse());
         this.packets.add(spawnCorpse());
         this.packets.add(getMetadataPacket());
+        this.packets.add(getRotationPacket());
 
         this.armorSlots = new EnumWrappers.ItemSlot[]{
                 EnumWrappers.ItemSlot.FEET,
@@ -168,6 +169,17 @@ public class CorpseEntity {
 
             return metadataPacket;
         }
+    }
+
+    private PacketContainer getRotationPacket() {
+        PacketContainer rotationPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.REL_ENTITY_MOVE_LOOK);
+        rotationPacket.getIntegers().write(0, id);
+        rotationPacket.getBytes()
+                .write(0, (byte) ((location.getYaw() * 256.0F) / 360.0F))
+                .write(1, (byte) -90);
+        rotationPacket.getBooleans().write(0, true);
+
+        return rotationPacket;
     }
 
     private PacketContainer getArmorPacket(EnumWrappers.ItemSlot slot, ItemStack item) {
