@@ -17,3 +17,6 @@ instant-respawn: true
 
 # Kill players when leaving game
 kill-on-leave: false
+
+# Custom inventory title
+inventory-title: "{player}'s inventory"
