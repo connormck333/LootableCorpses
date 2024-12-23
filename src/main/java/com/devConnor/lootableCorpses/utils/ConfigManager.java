@@ -50,7 +50,7 @@ public class ConfigManager {
         }
     }
 
-    public static String getInventoryTitle(){
-        return config.getString("inventory-title","{player}'s inventory");
+    public static String getInventoryTitle() {
+        return config.getString("inventory-title", "{player}'s inventory");
     }
 }
