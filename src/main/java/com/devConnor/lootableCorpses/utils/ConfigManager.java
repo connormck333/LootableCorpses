@@ -18,7 +18,7 @@ public class ConfigManager {
     }
 
     public static int getCorpseLifespanAfterInteractionMillis() {
-        return (config.getInt("remove-corpse-after-interaction-minutes") * 60 * 20) ;
+        return (config.getInt("remove-corpse-after-interaction-minutes") * 60 * 20);
     }
 
     public static boolean isCorpseLifespanAfterInteractionSet() {
@@ -52,5 +52,9 @@ public class ConfigManager {
 
     public static String getInventoryTitle() {
         return config.getString("inventory-title", "{player}'s inventory");
+    }
+
+    public static boolean isKeepCorpsesAboveTheVoid() {
+        return getBoolean("keep-corpses-above-the-void");
     }
 }
