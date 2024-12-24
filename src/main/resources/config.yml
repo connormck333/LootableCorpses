@@ -20,3 +20,6 @@ kill-on-leave: false
 
 # Custom inventory title
 inventory-title: "{player}'s inventory"
+
+# Set whether the corpse is generated above the Void when a player dies in the Void
+keep-corpses-above-the-void: true
