@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -36,6 +37,7 @@ public class CorpseManager {
     private final boolean killOnLeave;
 
     private final int CORPSE_LIFESPAN_MILLIS;
+    private final boolean keepCorpsesAboveTheVoid;
 
     public CorpseManager(LootableCorpses lootableCorpses) {
         this.lootableCorpses = lootableCorpses;
@@ -45,6 +47,7 @@ public class CorpseManager {
         this.inventoriesOpen = new HashMap<>();
         this.instantRespawnEnabled = ConfigManager.isInstantRespawnEnabled();
         this.killOnLeave = ConfigManager.shouldKillOnLeave();
+        this.keepCorpsesAboveTheVoid = ConfigManager.isKeepCorpsesAboveTheVoid();
 
         this.CORPSE_LIFESPAN_MILLIS = ConfigManager.getCorpseLifespanMillis();
 
@@ -52,7 +55,11 @@ public class CorpseManager {
     }
 
     public void createCorpse(Player player, PlayerInventory inventory) {
-        corpses.add(new CorpseEntity(lootableCorpses, player.getUniqueId(), player.getLocation(), inventory));
+        Location location = player.getLocation();
+        if (keepCorpsesAboveTheVoid) {
+            location.setY(Math.max(location.getY(), (player.getWorld().getMinHeight() + 0.5)));
+        }
+        corpses.add(new CorpseEntity(lootableCorpses, player.getUniqueId(), location, inventory));
     }
 
     public void removeArmorFromCorpse(int entityId, int slot) {
@@ -110,7 +117,7 @@ public class CorpseManager {
         ArrayList<CorpseEntity> corpseList = new ArrayList<>();
         corpseList.add(corpseEntity);
 
-        destroyCorpses(corpseList, new IntArrayList(new int[] { corpseEntity.getId() }));
+        destroyCorpses(corpseList, new IntArrayList(new int[]{corpseEntity.getId()}));
     }
 
     private void destroyCorpses(ArrayList<CorpseEntity> corpseEntitiesToDestroy, IntList entityIds) {

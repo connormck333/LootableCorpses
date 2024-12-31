@@ -8,6 +8,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
+import static com.devConnor.lootableCorpses.utils.ConfigManager.getInventoryTitle;
+
 public class CorpseGui {
 
     private final Inventory gui;
@@ -24,7 +26,7 @@ public class CorpseGui {
         if (corpsePlayer == null) {
             this.gui = Bukkit.createInventory(null, INVENTORY_SIZE, "Player Inventory");
         } else {
-            this.gui = Bukkit.createInventory(null, INVENTORY_SIZE, corpsePlayer.getName() + "'s inventory");
+            this.gui = Bukkit.createInventory(null, INVENTORY_SIZE, getInventoryTitle().replace("{player}", corpsePlayer.getName()));
         }
 
         setup(corpseInventory);

@@ -6,10 +6,17 @@ import com.devConnor.lootableCorpses.managers.CorpseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class CorpseListener implements Listener {
 
@@ -21,12 +28,21 @@ public class CorpseListener implements Listener {
         this.corpseManager = corpseManager;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent e) {
         if (lootableCorpses.isPluginEnabled()) {
+            if(e.getKeepInventory()) return;
             Player player = e.getEntity();
-            corpseManager.createCorpse(player, player.getInventory());
-            e.getDrops().clear();
+            PlayerInventory inventory = player.getInventory();
+            List<ItemStack> drops = e.getDrops();
+            Set<ItemStack> dropSet = new HashSet<>(drops);
+            drops.clear();
+            for (int i = 0; i <= 40; i++) {
+                if (!dropSet.contains(inventory.getItem(i))) {
+                    inventory.clear(i);
+                }
+            }
+            corpseManager.createCorpse(player, inventory);
 
             if (corpseManager.isInstantRespawnEnabled()) {
                 Bukkit.getScheduler().runTaskLater(lootableCorpses, () -> player.spigot().respawn(), 0L);
