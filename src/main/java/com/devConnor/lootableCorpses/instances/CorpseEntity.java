@@ -135,6 +135,7 @@ public class CorpseEntity {
         if (isVersionAtLeast("20.1")) {
             WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
             dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(6, WrappedDataWatcher.Registry.get(EntityPose.class)), EntityPose.b);
+            dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(17, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x7F);
 
             // Prepare the metadata packet
             PacketContainer metadataPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
@@ -150,18 +151,19 @@ public class CorpseEntity {
         } else {
             PacketContainer metadataPacket = lootableCorpses.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
 
-            // Set the entity ID
             metadataPacket.getIntegers().write(0, this.id);
-
-            // Create metadata entries manually
             List<WrappedDataValue> wrappedDataValues = new ArrayList<>();
 
-            // Example: Setting pose, replace EntityPose.SLEEPING with your required pose
             WrappedDataWatcher.WrappedDataWatcherObject poseObject = new WrappedDataWatcher.WrappedDataWatcherObject(
                     6, WrappedDataWatcher.Registry.get(EntityPose.class));
             WrappedDataValue poseValue = new WrappedDataValue(poseObject.getIndex(), poseObject.getSerializer(), EntityPose.b);
-
             wrappedDataValues.add(poseValue);
+
+            WrappedDataWatcher.WrappedDataWatcherObject skinPartsObject = new WrappedDataWatcher.WrappedDataWatcherObject(
+                    17, WrappedDataWatcher.Registry.get(Byte.class));
+            WrappedDataValue skinPartsValue = new WrappedDataValue(skinPartsObject.getIndex(), skinPartsObject.getSerializer(), (byte) 0x7F);
+
+            wrappedDataValues.add(skinPartsValue);
 
             // Attach data values to the metadata packet
             metadataPacket.getDataValueCollectionModifier().write(0, wrappedDataValues);
