@@ -8,6 +8,8 @@ import lombok.Getter;
 import net.minecraft.world.entity.EntityPose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Slab;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -197,7 +199,19 @@ public class CorpseEntity {
     private double getHighestBlock() {
         Location highestBlockLocation = location.getWorld().getHighestBlockAt(location).getLocation();
 
-        return highestBlockLocation.getBlockY() < location.getBlockY() ? highestBlockLocation.getBlockY() + 0.9 : location.getBlockY() - 0.1;
+        if (highestBlockLocation.getBlockY() < location.getBlockY()) {
+            return highestBlockLocation.getBlockY() + 0.9 + getOffset(highestBlockLocation);
+        }
+
+        return location.getBlockY() - 0.1 + getOffset(location);
+    }
+
+    private double getOffset(Location loc) {
+        if (loc.getWorld().getBlockAt(loc).getBlockData() instanceof Slab) {
+            return 0.5;
+        }
+
+        return 0;
     }
 
     private void sendPackets() {
