@@ -18,6 +18,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class CorpseManager {
@@ -36,6 +37,7 @@ public class CorpseManager {
     @Getter
     private final boolean killOnLeave;
 
+    private final List<String> blackListedWorlds;
     private final int CORPSE_LIFESPAN_MILLIS;
     private final boolean keepCorpsesAboveTheVoid;
 
@@ -48,6 +50,7 @@ public class CorpseManager {
         this.instantRespawnEnabled = ConfigManager.isInstantRespawnEnabled();
         this.killOnLeave = ConfigManager.shouldKillOnLeave();
         this.keepCorpsesAboveTheVoid = ConfigManager.isKeepCorpsesAboveTheVoid();
+        this.blackListedWorlds = ConfigManager.getBlacklistedWorlds();
 
         this.CORPSE_LIFESPAN_MILLIS = ConfigManager.getCorpseLifespanMillis();
 
@@ -98,6 +101,10 @@ public class CorpseManager {
         gui.open(player);
 
         setCorpseRemoverTimer(corpseEntity);
+    }
+
+    public boolean isWorldBlacklisted(String worldName) {
+        return blackListedWorlds.contains(worldName);
     }
 
     public void clear(boolean disregardTime) {

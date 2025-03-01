@@ -3,6 +3,10 @@ package com.devConnor.lootableCorpses.utils;
 import com.devConnor.lootableCorpses.LootableCorpses;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ConfigManager {
 
     private static FileConfiguration config;
@@ -56,5 +60,16 @@ public class ConfigManager {
 
     public static boolean isKeepCorpsesAboveTheVoid() {
         return getBoolean("keep-corpses-above-the-void");
+    }
+
+    public static List<String> getBlacklistedWorlds() {
+        List<?> blacklistedWorlds = config.getList("blacklisted-worlds");
+        if (blacklistedWorlds != null) {
+            return blacklistedWorlds.stream()
+                    .map(obj -> (String) obj)
+                    .toList();
+        }
+
+        return new ArrayList<>();
     }
 }
