@@ -4,6 +4,7 @@ import com.devConnor.lootableCorpses.LootableCorpses;
 import com.devConnor.lootableCorpses.instances.CorpseGui;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,23 +31,26 @@ public class CorpseListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent e) {
-        if (lootableCorpses.isPluginEnabled()) {
-            if(e.getKeepInventory()) return;
-            Player player = e.getEntity();
-            PlayerInventory inventory = player.getInventory();
-            List<ItemStack> drops = e.getDrops();
-            Set<ItemStack> dropSet = new HashSet<>(drops);
-            drops.clear();
-            for (int i = 0; i <= 40; i++) {
-                if (!dropSet.contains(inventory.getItem(i))) {
-                    inventory.clear(i);
-                }
-            }
-            corpseManager.createCorpse(player, inventory);
+        if (!lootableCorpses.isPluginEnabled()) return;
+        if (e.getKeepInventory()) return;
 
-            if (corpseManager.isInstantRespawnEnabled()) {
-                Bukkit.getScheduler().runTaskLater(lootableCorpses, () -> player.spigot().respawn(), 0L);
+        Player player = e.getEntity();
+        World playerWorld = player.getWorld();
+        if (corpseManager.isWorldBlacklisted(playerWorld.getName())) return;
+
+        PlayerInventory inventory = player.getInventory();
+        List<ItemStack> drops = e.getDrops();
+        Set<ItemStack> dropSet = new HashSet<>(drops);
+        drops.clear();
+        for (int i = 0; i <= 40; i++) {
+            if (!dropSet.contains(inventory.getItem(i))) {
+                inventory.clear(i);
             }
+        }
+        corpseManager.createCorpse(player, inventory);
+
+        if (corpseManager.isInstantRespawnEnabled()) {
+            Bukkit.getScheduler().runTaskLater(lootableCorpses, () -> player.spigot().respawn(), 0L);
         }
     }
 
