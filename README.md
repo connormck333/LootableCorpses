@@ -6,7 +6,7 @@ When a player dies, a corpse is created at their location, preserving their inve
 This corpse can be interacted with, providing an immersive way to retrieve lost gear.
 The plugin supports customization of corpse behaviors, such as fall dynamics and spawn effects, making it a perfect addition for PvP or survival servers.
 
-Check it out on Spigot with 900+ downloads: https://www.spigotmc.org/resources/1-20-1-21-lootable-corpses.120407/
+Check it out on Spigot with 1000+ downloads: https://www.spigotmc.org/resources/1-20-1-21-lootable-corpses.120407/
 
 ![Demo GIF](./resources/demo.gif)
 
