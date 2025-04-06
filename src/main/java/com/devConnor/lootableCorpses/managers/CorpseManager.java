@@ -40,6 +40,7 @@ public class CorpseManager {
     private final List<String> blackListedWorlds;
     private final int CORPSE_LIFESPAN_MILLIS;
     private final boolean keepCorpsesAboveTheVoid;
+    private final boolean dropInvOnDespawn;
 
     public CorpseManager(LootableCorpses lootableCorpses) {
         this.lootableCorpses = lootableCorpses;
@@ -51,6 +52,7 @@ public class CorpseManager {
         this.killOnLeave = ConfigManager.shouldKillOnLeave();
         this.keepCorpsesAboveTheVoid = ConfigManager.isKeepCorpsesAboveTheVoid();
         this.blackListedWorlds = ConfigManager.getBlacklistedWorlds();
+        this.dropInvOnDespawn = ConfigManager.shouldDropInvOnDespawn();
 
         this.CORPSE_LIFESPAN_MILLIS = ConfigManager.getCorpseLifespanMillis();
 
@@ -137,6 +139,9 @@ public class CorpseManager {
 
         for (CorpseEntity corpseEntity : corpseEntitiesToDestroy) {
             corpses.remove(corpseEntity);
+            if (dropInvOnDespawn) {
+                corpseEntity.dropRemainingInventory();
+            }
         }
     }
 

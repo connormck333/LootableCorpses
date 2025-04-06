@@ -8,7 +8,6 @@ import lombok.Getter;
 import net.minecraft.world.entity.EntityPose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -241,6 +240,17 @@ public class CorpseEntity {
         corpseInventory.getArmor().removeArmor(slot);
         for (Player p : lootableCorpses.getPlayers()) {
             sendArmorPacket(p);
+        }
+    }
+
+    public void dropRemainingInventory() {
+        if (location.getWorld() == null) return;
+
+        ItemStack[] inventory = corpseInventory.getInventory();
+        for (ItemStack itemStack : inventory) {
+            if (itemStack != null) {
+                location.getWorld().dropItemNaturally(location, itemStack);
+            }
         }
     }
 }
