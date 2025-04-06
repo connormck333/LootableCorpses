@@ -246,7 +246,7 @@ public class CorpseEntity {
     public void dropRemainingInventory() {
         if (location.getWorld() == null) return;
 
-        ItemStack[] inventory = corpseInventory.getInventory();
+        ItemStack[] inventory = corpseGui.getGui().getStorageContents();
         for (ItemStack itemStack : inventory) {
             if (itemStack != null) {
                 location.getWorld().dropItemNaturally(location, itemStack);
