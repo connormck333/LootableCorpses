@@ -1,12 +1,13 @@
 package com.devConnor.lootableCorpses.utils;
 
 import com.devConnor.lootableCorpses.LootableCorpses;
+import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@UtilityClass
 public class ConfigManager {
 
     private static FileConfiguration config;
@@ -62,11 +63,15 @@ public class ConfigManager {
         return getBoolean("keep-corpses-above-the-void");
     }
 
+    public static boolean shouldDropInvOnDespawn() {
+        return getBoolean("drop-inv-on-despawn");
+    }
+
     public static List<String> getBlacklistedWorlds() {
         List<?> blacklistedWorlds = config.getList("blacklisted-worlds");
         if (blacklistedWorlds != null) {
             return blacklistedWorlds.stream()
-                    .map(obj -> (String) obj)
+                    .map(String.class::cast)
                     .toList();
         }
 

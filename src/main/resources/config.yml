@@ -18,6 +18,9 @@ instant-respawn: true
 # Kill players when leaving game
 kill-on-leave: false
 
+# Drop inventory when corpse despawns
+drop-inv-on-despawn: true
+
 # Custom inventory title
 inventory-title: "{player}'s inventory"
 
