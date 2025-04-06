@@ -19,7 +19,8 @@ instant-respawn: true
 kill-on-leave: false
 
 # Drop inventory when corpse despawns
-drop-inv-on-despawn: true
+# This will be disabled if you have remove-corpse-after-interaction-minutes set to 0
+drop-inv-on-despawn: false
 
 # Custom inventory title
 inventory-title: "{player}'s inventory"

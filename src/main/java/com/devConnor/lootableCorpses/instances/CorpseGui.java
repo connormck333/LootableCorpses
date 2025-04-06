@@ -10,11 +10,11 @@ import java.util.UUID;
 
 import static com.devConnor.lootableCorpses.utils.ConfigManager.getInventoryTitle;
 
+@Getter
 public class CorpseGui {
 
     private final Inventory gui;
 
-    @Getter
     private final int entityId;
 
     public CorpseGui(int entityId, UUID corpseUUID, CorpseInventory corpseInventory) {

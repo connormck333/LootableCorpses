@@ -139,7 +139,7 @@ public class CorpseManager {
 
         for (CorpseEntity corpseEntity : corpseEntitiesToDestroy) {
             corpses.remove(corpseEntity);
-            if (dropInvOnDespawn) {
+            if (dropInvOnDespawn && lootableCorpses.getCorpseLifespanAfterInteraction() != 0) {
                 corpseEntity.dropRemainingInventory();
             }
         }
