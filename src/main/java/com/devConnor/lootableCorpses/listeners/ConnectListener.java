@@ -22,9 +22,13 @@ public class ConnectListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        if (corpseManager.isKillOnLeave()) {
+        if (corpseManager.isKillOnLeaveEnabled()) {
             Player player = e.getPlayer();
             player.setHealth(0);
+        } else if (corpseManager.isSpawnCorpseOnLeaveEnabled()) {
+            Player player = e.getPlayer();
+            corpseManager.createCorpse(player, player.getInventory());
+            player.getInventory().clear();
         }
     }
 }

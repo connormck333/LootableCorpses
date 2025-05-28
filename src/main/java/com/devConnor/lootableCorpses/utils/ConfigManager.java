@@ -77,4 +77,8 @@ public class ConfigManager {
 
         return new ArrayList<>();
     }
+
+    public static boolean spawnCorpseOnPlayerLeave() {
+        return getBoolean("spawn-corpse-on-player-leave");
+    }
 }

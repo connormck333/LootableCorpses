@@ -28,6 +28,11 @@ inventory-title: "{player}'s inventory"
 # Set whether the corpse is generated above the Void when a player dies in the Void
 keep-corpses-above-the-void: true
 
+# Set to true to spawn a corpse when a player leaves the game without killing the player
+# Note: This will clear the player's inventory, it is up to them to retake their inventory from their corpse on rejoin
+# Note: kill-on-leave must be false for this to be enabled
+spawn-corpse-on-player-leave: false
+
 # Blacklisted worlds - disable lootable corpses in certain worlds
 blacklisted-worlds:
   - world_nether

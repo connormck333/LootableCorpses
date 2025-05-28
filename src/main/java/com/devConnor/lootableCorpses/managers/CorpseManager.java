@@ -35,7 +35,10 @@ public class CorpseManager {
     private final boolean instantRespawnEnabled;
 
     @Getter
-    private final boolean killOnLeave;
+    private final boolean killOnLeaveEnabled;
+
+    @Getter
+    private final boolean spawnCorpseOnLeaveEnabled;
 
     private final List<String> blackListedWorlds;
     private final int CORPSE_LIFESPAN_MILLIS;
@@ -49,7 +52,8 @@ public class CorpseManager {
         this.autoRemover = new AutoRemover(lootableCorpses, this);
         this.inventoriesOpen = new HashMap<>();
         this.instantRespawnEnabled = ConfigManager.isInstantRespawnEnabled();
-        this.killOnLeave = ConfigManager.shouldKillOnLeave();
+        this.killOnLeaveEnabled = ConfigManager.shouldKillOnLeave();
+        this.spawnCorpseOnLeaveEnabled = !this.killOnLeaveEnabled && ConfigManager.spawnCorpseOnPlayerLeave();
         this.keepCorpsesAboveTheVoid = ConfigManager.isKeepCorpsesAboveTheVoid();
         this.blackListedWorlds = ConfigManager.getBlacklistedWorlds();
         this.dropInvOnDespawn = ConfigManager.shouldDropInvOnDespawn();
