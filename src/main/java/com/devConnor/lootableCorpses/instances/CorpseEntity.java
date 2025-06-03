@@ -8,7 +8,10 @@ import lombok.Getter;
 import net.minecraft.world.entity.EntityPose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Slab;
+import org.bukkit.block.data.type.Snow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -206,8 +209,14 @@ public class CorpseEntity {
     }
 
     private double getOffset(Location loc) {
-        if (loc.getWorld().getBlockAt(loc).getBlockData() instanceof Slab) {
+        Block block = loc.getWorld().getBlockAt(loc);
+        Block blockAbove = loc.getWorld().getBlockAt(loc.add(0, 1, 0));
+
+        if (block.getBlockData() instanceof Slab) {
             return 0.5;
+        } else if (blockAbove.getType() == Material.SNOW) {
+            Snow snowBlock = (Snow) blockAbove.getBlockData();
+            return (0.125 * snowBlock.getLayers()) - 0.1;
         }
 
         return 0;
