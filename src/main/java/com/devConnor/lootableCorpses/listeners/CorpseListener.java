@@ -1,19 +1,30 @@
 package com.devConnor.lootableCorpses.listeners;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.comphenix.protocol.wrappers.WrappedEnumEntityUseAction;
 import com.devConnor.lootableCorpses.LootableCorpses;
+import com.devConnor.lootableCorpses.instances.CorpseEntity;
 import com.devConnor.lootableCorpses.instances.CorpseGui;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
+import com.devConnor.lootableCorpses.managers.PacketManager;
 import org.bukkit.Bukkit;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.RayTraceResult;
 
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +62,24 @@ public class CorpseListener implements Listener {
 
         if (corpseManager.isInstantRespawnEnabled()) {
             Bukkit.getScheduler().runTaskLater(lootableCorpses, () -> player.spigot().respawn(), 0L);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent e) {
+        if (!lootableCorpses.isPluginEnabled()) return;
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        Block clickedBlock = e.getClickedBlock();
+        if (!clickedBlock.isPassable()) return;
+
+        Player player = e.getPlayer();
+        CorpseEntity corpseFound = corpseManager.findCorpseInRayTrace(player);
+
+        if (corpseFound != null) {
+            corpseManager.createNewCorpseGui(player, corpseFound);
         }
     }
 

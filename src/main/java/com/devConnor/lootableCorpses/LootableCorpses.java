@@ -1,17 +1,13 @@
 package com.devConnor.lootableCorpses;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.devConnor.lootableCorpses.instances.CorpseEntity;
-import com.devConnor.lootableCorpses.instances.CorpseRemoveWand;
 import com.devConnor.lootableCorpses.listeners.CommandListener;
 import com.devConnor.lootableCorpses.listeners.ConnectListener;
 import com.devConnor.lootableCorpses.listeners.CorpseListener;
+import com.devConnor.lootableCorpses.listeners.PacketListener;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
+import com.devConnor.lootableCorpses.managers.PacketManager;
 import com.devConnor.lootableCorpses.utils.ConfigManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -27,6 +23,8 @@ public final class LootableCorpses extends JavaPlugin {
     @Getter
     private ProtocolManager protocolManager;
 
+    private PacketListener packetListener;
+
     @Getter
     private boolean isPluginEnabled;
 
@@ -39,6 +37,8 @@ public final class LootableCorpses extends JavaPlugin {
 
         this.corpseManager = new CorpseManager(this);
         this.protocolManager = ProtocolLibrary.getProtocolManager();
+        this.packetListener = new PacketListener(this, this.protocolManager, this.corpseManager);
+        PacketManager.loadPacketManager(this);
 
         if (ConfigManager.isCorpseLifespanAfterInteractionSet()) {
             this.corpseLifespanAfterInteraction = ConfigManager.getCorpseLifespanAfterInteractionMillis();
@@ -49,7 +49,7 @@ public final class LootableCorpses extends JavaPlugin {
 
         this.isPluginEnabled = !ConfigManager.isLootingDisabled();
         if (this.isPluginEnabled) {
-            createUseEntityPacketListener();
+            this.packetListener.createUseEntityPacketListener();
         }
 
         getCommand("lootablecorpses").setExecutor(new CommandListener(this, corpseManager));
@@ -61,28 +61,5 @@ public final class LootableCorpses extends JavaPlugin {
 
     public void toggle(boolean enable) {
         this.isPluginEnabled = enable;
-    }
-
-    private void createUseEntityPacketListener() {
-        protocolManager.addPacketListener(new PacketAdapter(this, PacketType.Play.Client.USE_ENTITY) {
-            @Override
-            public void onPacketReceiving(PacketEvent e) {
-                PacketContainer packet = e.getPacket();
-                int entityId = packet.getIntegers().read(0);
-
-                CorpseEntity corpseEntity = corpseManager.getCorpseEntity(entityId);
-                Player player = e.getPlayer();
-                if (corpseEntity == null || player == null) {
-                    return;
-                }
-
-                if (CorpseRemoveWand.isWand(player.getInventory().getItemInMainHand())) {
-                    Bukkit.getScheduler().runTask(LootableCorpses.this, () -> corpseManager.destroyCorpse(corpseEntity));
-                    return;
-                }
-
-                Bukkit.getScheduler().runTask(LootableCorpses.this, () -> corpseManager.createNewCorpseGui(player, corpseEntity));
-            }
-        });
     }
 }

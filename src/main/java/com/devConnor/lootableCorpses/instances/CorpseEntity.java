@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.*;
 import com.devConnor.lootableCorpses.LootableCorpses;
+import com.devConnor.lootableCorpses.managers.PacketManager;
 import lombok.Getter;
 import net.minecraft.world.entity.EntityPose;
 import org.bukkit.Bukkit;
@@ -223,7 +224,7 @@ public class CorpseEntity {
     }
 
     private void sendPackets() {
-        for (Player p: lootableCorpses.getPlayers()) {
+        for (Player p : lootableCorpses.getPlayers()) {
             sendPacketToPlayer(p);
         }
     }
@@ -237,7 +238,7 @@ public class CorpseEntity {
     public void sendPacketToPlayer(Player p) {
         try {
             for (PacketContainer packet : packets) {
-                lootableCorpses.getProtocolManager().sendServerPacket(p, packet);
+                PacketManager.sendPacketToPlayer(p, packet);
             }
             sendArmorPacket(p);
         } catch (Exception e) {

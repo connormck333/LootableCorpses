@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -156,5 +157,28 @@ public class CorpseManager {
         } else if (lifespan > 0) {
             Bukkit.getScheduler().runTaskLater(lootableCorpses, () -> destroyCorpse(corpseEntity), lifespan);
         }
+    }
+
+    public CorpseEntity findCorpseInRayTrace(Player player) {
+        Location eye = player.getEyeLocation();
+        Vector direction = eye.getDirection().normalize();
+
+        for (CorpseEntity corpse : corpses) {
+            Location corpseLoc = corpse.getLocation();
+
+            Vector toCorpse = corpseLoc.toVector().subtract(eye.toVector());
+            double projection = toCorpse.dot(direction);
+
+            if (projection < 0 || projection > 3.0) continue;
+
+            Vector closestPoint = eye.toVector().add(direction.clone().multiply(projection));
+            double distance = closestPoint.distance(corpseLoc.toVector());
+
+            if (distance < 0.6) {
+                return corpse;
+            }
+        }
+
+        return null;
     }
 }
