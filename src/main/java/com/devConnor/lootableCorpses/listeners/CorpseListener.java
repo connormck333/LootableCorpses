@@ -1,16 +1,10 @@
 package com.devConnor.lootableCorpses.listeners;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.comphenix.protocol.wrappers.WrappedEnumEntityUseAction;
 import com.devConnor.lootableCorpses.LootableCorpses;
 import com.devConnor.lootableCorpses.instances.CorpseEntity;
 import com.devConnor.lootableCorpses.instances.CorpseGui;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
-import com.devConnor.lootableCorpses.managers.PacketManager;
-import org.bukkit.Bukkit;
-import org.bukkit.FluidCollisionMode;
+import com.devConnor.lootableCorpses.utils.XScheduler;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -24,7 +18,6 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.util.RayTraceResult;
 
 import java.util.HashSet;
 import java.util.List;
@@ -34,10 +27,12 @@ public class CorpseListener implements Listener {
 
     private final LootableCorpses lootableCorpses;
     private final CorpseManager corpseManager;
+    private final XScheduler.IScheduler scheduler;
 
     public CorpseListener(LootableCorpses lootableCorpses, CorpseManager corpseManager) {
         this.lootableCorpses = lootableCorpses;
         this.corpseManager = corpseManager;
+        this.scheduler = XScheduler.get();
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -61,7 +56,7 @@ public class CorpseListener implements Listener {
         corpseManager.createCorpse(player, inventory);
 
         if (corpseManager.isInstantRespawnEnabled()) {
-            Bukkit.getScheduler().runTaskLater(lootableCorpses, () -> player.spigot().respawn(), 0L);
+            scheduler.runTaskLater(() -> player.spigot().respawn(), 0L);
         }
     }
 

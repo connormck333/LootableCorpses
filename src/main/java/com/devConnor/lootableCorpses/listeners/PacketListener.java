@@ -9,7 +9,7 @@ import com.devConnor.lootableCorpses.LootableCorpses;
 import com.devConnor.lootableCorpses.instances.CorpseEntity;
 import com.devConnor.lootableCorpses.instances.CorpseRemoveWand;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
-import org.bukkit.Bukkit;
+import com.devConnor.lootableCorpses.utils.XScheduler;
 import org.bukkit.entity.Player;
 
 public class PacketListener {
@@ -17,11 +17,13 @@ public class PacketListener {
     private final LootableCorpses lootableCorpses;
     private final ProtocolManager protocolManager;
     private final CorpseManager corpseManager;
+    private final XScheduler.IScheduler scheduler;
 
     public PacketListener(LootableCorpses lootableCorpses, ProtocolManager protocolManager, CorpseManager corpseManager) {
         this.lootableCorpses = lootableCorpses;
         this.protocolManager = protocolManager;
         this.corpseManager = corpseManager;
+        this.scheduler = XScheduler.get();
     }
 
     public void createUseEntityPacketListener() {
@@ -38,11 +40,11 @@ public class PacketListener {
                 }
 
                 if (CorpseRemoveWand.isWand(player.getInventory().getItemInMainHand())) {
-                    Bukkit.getScheduler().runTask(lootableCorpses, () -> corpseManager.destroyCorpse(corpseEntity));
+                    scheduler.runTask(() -> corpseManager.destroyCorpse(corpseEntity));
                     return;
                 }
 
-                Bukkit.getScheduler().runTask(lootableCorpses, () -> corpseManager.createNewCorpseGui(player, corpseEntity));
+                scheduler.runTask(() -> corpseManager.createNewCorpseGui(player, corpseEntity));
             }
         });
     }
