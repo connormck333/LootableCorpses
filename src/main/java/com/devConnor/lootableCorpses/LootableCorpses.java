@@ -9,6 +9,7 @@ import com.devConnor.lootableCorpses.listeners.PacketListener;
 import com.devConnor.lootableCorpses.managers.CorpseManager;
 import com.devConnor.lootableCorpses.managers.PacketManager;
 import com.devConnor.lootableCorpses.utils.ConfigManager;
+import com.devConnor.lootableCorpses.utils.XScheduler;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -33,6 +34,7 @@ public final class LootableCorpses extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        new XScheduler(this);
         ConfigManager.setupConfig(this);
 
         this.corpseManager = new CorpseManager(this);
@@ -53,6 +55,11 @@ public final class LootableCorpses extends JavaPlugin {
         }
 
         getCommand("lootablecorpses").setExecutor(new CommandListener(this, corpseManager));
+    }
+
+    @Override
+    public void onDisable() {
+        XScheduler.get().cancelAll();
     }
 
     public Collection<? extends Player> getPlayers() {

@@ -2,6 +2,7 @@ name: LootableCorpses
 version: '1.0-SNAPSHOT'
 main: com.devConnor.lootableCorpses.LootableCorpses
 api-version: '1.19'
+folia-supported: true
 depend: [ProtocolLib]
 commands:
   lootablecorpses:
