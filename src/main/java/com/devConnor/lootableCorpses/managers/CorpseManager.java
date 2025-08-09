@@ -7,10 +7,10 @@ import com.devConnor.lootableCorpses.instances.CorpseEntity;
 import com.devConnor.lootableCorpses.instances.CorpseGui;
 import com.devConnor.lootableCorpses.listeners.AutoRemover;
 import com.devConnor.lootableCorpses.utils.ConfigManager;
+import com.devConnor.lootableCorpses.utils.XScheduler;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -18,9 +18,9 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CorpseManager {
 
@@ -30,7 +30,7 @@ public class CorpseManager {
     private final ArrayList<CorpseEntity> corpses;
 
     private final AutoRemover autoRemover;
-    private final HashMap<UUID, CorpseGui> inventoriesOpen;
+    private final ConcurrentHashMap<UUID, CorpseGui> inventoriesOpen;
 
     @Getter
     private final boolean instantRespawnEnabled;
@@ -45,13 +45,15 @@ public class CorpseManager {
     private final int CORPSE_LIFESPAN_MILLIS;
     private final boolean keepCorpsesAboveTheVoid;
     private final boolean dropInvOnDespawn;
+    private final XScheduler.IScheduler scheduler;
 
     public CorpseManager(LootableCorpses lootableCorpses) {
         this.lootableCorpses = lootableCorpses;
+        this.scheduler = XScheduler.get();
 
         this.corpses = new ArrayList<>();
-        this.autoRemover = new AutoRemover(lootableCorpses, this);
-        this.inventoriesOpen = new HashMap<>();
+        this.autoRemover = new AutoRemover( this);
+        this.inventoriesOpen = new ConcurrentHashMap<>();
         this.instantRespawnEnabled = ConfigManager.isInstantRespawnEnabled();
         this.killOnLeaveEnabled = ConfigManager.shouldKillOnLeave();
         this.spawnCorpseOnLeaveEnabled = !this.killOnLeaveEnabled && ConfigManager.spawnCorpseOnPlayerLeave();
@@ -155,7 +157,7 @@ public class CorpseManager {
         if (lifespan == 0) {
             destroyCorpse(corpseEntity);
         } else if (lifespan > 0) {
-            Bukkit.getScheduler().runTaskLater(lootableCorpses, () -> destroyCorpse(corpseEntity), lifespan);
+            scheduler.runTaskLater(() -> destroyCorpse(corpseEntity), lifespan);
         }
     }
 
